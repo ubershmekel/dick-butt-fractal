@@ -1,3 +1,13 @@
+/*
+
+Please ignore this JS file. In the end the only thing I used here was:
+* The `developFrames` function to have two semi-transparent SVGs.
+* The JS console to iteratively modify the transform. E.g. call
+  root2.setAttribute("transform", "scale(16) translate(-754.5, 1440.8) rotate(-90)");
+
+*/
+
+
 var svgNS = "http://www.w3.org/2000/svg";
 var anim = {};
 
