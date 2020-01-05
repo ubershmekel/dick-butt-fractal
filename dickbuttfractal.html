@@ -10,7 +10,7 @@
    width="100%"
    height="100%"
    viewBox="0 0 1920 1080"
-   id="svg2">
+   id="the-svg">
   <defs
      id="defs4" />
   <metadata
@@ -120,204 +120,32 @@
 <style>
 html, body { margin:0; padding:0; overflow:hidden }
 svg { position:fixed; top:0; bottom:0; left:0; right:0 }
+
+/* CSS transitions for easier developing frames */
+g {
+   transition: all 3s;
+}
+
+@keyframes spiraling {
+  from {transform: scale(8) translate(-1268px, 880px) rotate(-60deg);}
+  to {transform: scale(16) translate(-754.5px, 1440.8px) rotate(-90deg);}
+}
+
+#viewport {
+   /* Disable the spiraling animation when developing frames */
+   animation: spiraling 1.5s;
+   animation-iteration-count: infinite;
+   animation-timing-function: linear;
+
+}
+
 </style>
 
 
 <script src="svg-pan-zoom.js"></script>
 <script src="http://code.jquery.com/jquery-2.1.1.js"></script>
 <script src="jquery.mousewheel.js"></script>
+<script src="main.js"></script>
 
-
-
-<script>
-var svgNS = "http://www.w3.org/2000/svg";
-var anim = {};
-
-anim.translate = function(elem, dur, start, end) {
-  var a = document.createElementNS(svgNS, "animateTransform");
-
-  //var bb = elem.getBBox();
-  //var cx = bb.x + bb.width / 2;
-  //var cy = bb.y + bb.height / 2;
-
-  a.setAttributeNS(null, "attributeName", "transform");
-  a.setAttributeNS(null, "attributeType", "XML");
-  a.setAttributeNS(null, "type", "translate");
-  a.setAttributeNS(null, "dur", dur + "s");
-  a.setAttributeNS(null, "repeatCount", "indefinite");
-  a.setAttributeNS(null, "from", start);
-  a.setAttributeNS(null, "to", end);
-  a.setAttributeNS(null, "additive", "sum");
-
-  elem.appendChild(a);
-}
-
-anim.scale = function(elem, dur, start, end)
-{
-  var a = document.createElementNS(svgNS, "animateTransform");
-
-  //var bb = elem.getBBox();
-  //var cx = bb.x + bb.width / 2;
-  //var cy = bb.y + bb.height / 2;
-
-  a.setAttributeNS(null, "attributeName", "transform");
-  a.setAttributeNS(null, "attributeType", "XML");
-  a.setAttributeNS(null, "type", "scale");
-  a.setAttributeNS(null, "dur", dur + "s");
-  a.setAttributeNS(null, "repeatCount", "indefinite");
-  a.setAttributeNS(null, "from", start);
-  a.setAttributeNS(null, "to", end);
-  a.setAttributeNS(null, "additive", "sum");
-
-  elem.appendChild(a);
-  //a.beginElement();
-}
-
-anim.rotate = function(elem, dur, start, end)
-{
-  var a = document.createElementNS(svgNS, "animateTransform");
-
-  var bb = elem.getBBox();
-  var cx = bb.x + bb.width / 2;
-  var cy = bb.y + bb.height / 2;
-
-  a.setAttributeNS(null, "attributeName", "transform");
-  a.setAttributeNS(null, "attributeType", "XML");
-  a.setAttributeNS(null, "type", "rotate");
-  a.setAttributeNS(null, "dur", dur + "s");
-  a.setAttributeNS(null, "repeatCount", "indefinite");
-  a.setAttributeNS(null, "from", start + " "+cx+" "+cy);
-  a.setAttributeNS(null, "to", end +" "+cx+" "+cy);
-  a.setAttributeNS(null, "additive", "sum");
-
-  elem.appendChild(a);
-  //a.beginElement();
-}
-
-var svg = document.getElementById("svg2");
-var layer = document.getElementById("layer1");
-var cheek = document.getElementById("cheek");
-var dick = document.getElementById("dick");
-var root = document.getElementById("viewport");
-
-//anim.scale(root, 10, 1, 5);
-//anim.translate(root, 10, '0 0', '-1300 -1000');
-
-//anim.rotate(dick, 5, 90, -270);
-//anim.rotate(cheek, 5, 90, -270);
-//anim.translate(layer, 5, '0 0', '-1000 -2500');
-//layer.setAttribute("transform", "translate(330,300)");
-
-// draw the dickbutts ahead of time
-//setTimeout(function() {
-//newDB.setAttribute("transform", );
-// more than 50 causes FF to be very slow
-for(var i = 0; i < 50; i++) {
-    var newDB = layer.cloneNode(true);
-    newDB.setAttribute("transform", "translate(460,250) scale(0.5 0.5) rotate(30)");
-    newDB.setAttribute("id", "newdb" + i);
-    //newDB.setAttribute("transform", "rotate(10)");
-    //newDB.setAttribute("transform", "translate(30,30)");
-    layer.insertBefore(newDB, dick);
-    dick = newDB.childNodes[3];
-    layer = newDB;
-}
-//}, 10);
-
-
-var frame = -1;
-var start = [1,0,0,1,0,0];
-var restart = [7.466601490359494,0,0,7.466601490359494,-9221.989058309942,-5449.39724177728];
-var end = [30164.266938375775,0,0,30164.266938375775,-42214697.3747986,-25016841.688433178];
-var current = [];
-var duration = 400;
-var animating = false;
-function renderFractal(frame) {
-    var percent = frame * 1.0 / duration;
-    //curve_state = curve_state * curve_state;
-    // pow 3 feels like 
-    var curve_state = 0.005 * percent + 0.995 * Math.pow(percent, 5);
-    //console.log(curve_state);
-    //curve_state = curve_state;
-    //curve_state = Math.sqrt(curve_state);
-    // `rsize * 0.5` would zoom in on the center
-    /*svg.style.width = (100 + rsize) + "%";
-    svg.style.left = (-rsize * 0.704) + "%";
-    svg.style.height = (100 + rsize) + "%";
-    svg.style.top = (-rsize * 0.77) + "%";
-    */
-    for (var i = 0; i < start.length; i ++) {
-        current[i] = curve_state * end[i] + (1 - curve_state) * restart[i];
-    }
-    root.setAttribute('transform', 'matrix(' + current.join(',') + ')');
-}
-
-function renderIntro(frame) {
-    var percent = frame * 1.0 / duration;
-    var curve_state = Math.pow(percent, 1);
-    //console.log(curve_state);
-    for (var i = 0; i < start.length; i ++) {
-        current[i] = percent * restart[i] + (1 - percent) * start[i];
-    }
-    root.setAttribute('transform', 'matrix(' + current.join(',') + ')');
-    if(percent > 0.99) {
-        render = renderFractal;
-    }
-}
-
-var render = renderIntro;
-
-// http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
-// shim layer with setTimeout fallback
-window.requestAnimFrame = (function(){
-  return  window.requestAnimationFrame       ||
-          window.webkitRequestAnimationFrame ||
-          window.mozRequestAnimationFrame    ||
-          function( callback ){
-            window.setTimeout(callback, 1000 / 60);
-          };
-})();
-
-function initTest() {
-  //matrix(30164.266938375775,0,0,30164.266938375775,-42214697.3747986,-25016841.688433178)
-  //matrix(8.247773170471191,0,0,8.247773170471191,-10398.712890624998,-6050.242675781251)
-  //root.setAttribute('transform', 'matrix(12122.341796875,0,0,12122.341796875,-16964395.05154133,-10053680.104685547)');
-  //setTimeout(function(){root.setAttribute('transform', 'matrix(8.247773170471191,0,0,8.247773170471191,-10398.712890624998,-6050.242675781251)')}, 1000);
-  
-  var panZoomTiger = svgPanZoom('#svg2');
-  //setTimeout(function(){root.setAttribute('transform', 'matrix(30164.266938375775,0,0,30164.266938375775,-42214697.3747986,-25016841.688433178)')}, 100);
-  setTimeout(function(){root.setAttribute('transform', 'matrix(7.466601490359494,0,0,7.466601490359494,-9221.989058309942,-5449.39724177728)')}, 1000);
-}
-function initWheel() {
-    $('body').on('mousewheel', function(event) {
-        //console.log(event.deltaX, event.deltaY, event.deltaFactor);
-        frame = (frame + event.deltaY * 3 + duration) % duration;
-        render(frame);
-        //console.log(frame);
-        return false;
-    });
-}
-
-
-// usage:
-// instead of setInterval(render, 16) ....
-(function animloop() {
-    initTest();
-    //initWheel();
-    
-    //requestAnimFrame(animloop);
-    if(!animating) {
-        return;
-    }
-    frame = (frame % duration) + 1;
-    render(frame);
-})();
-
-setTimeout(function(){animating = true;}, 400);
-
-// place the rAF *before* the render() to assure as close to
-// 60fps with the setTimeout fallback.
-
-</script>
 </body>
 </html>
