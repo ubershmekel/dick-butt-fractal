@@ -4,7 +4,7 @@ Please ignore this JS file. In the end the only thing I used here was:
 * The `developFrames` function to have two semi-transparent SVGs.
 * The JS console to iteratively modify the transform. E.g. call
   root2.setAttribute("transform", "scale(16) translate(-754.5, 1440.8) rotate(-90)");
-
+* `cloneLayers` to have many dick-butts.
 */
 
 
@@ -89,18 +89,20 @@ var root = document.getElementById("viewport");
 // draw the dickbutts ahead of time
 //setTimeout(function() {
 //newDB.setAttribute("transform", );
-// more than 50 causes FF to be very slow
-for(var i = 0; i < 50; i++) {
-    var newDB = layer.cloneNode(true);
-    newDB.setAttribute("transform", "translate(460,250) scale(0.5 0.5) rotate(30)");
-    newDB.setAttribute("id", "newdb" + i);
-    //newDB.setAttribute("transform", "rotate(10)");
-    //newDB.setAttribute("transform", "translate(30,30)");
-    layer.insertBefore(newDB, dick);
-    dick = newDB.childNodes[3];
-    layer = newDB;
+function cloneLayers() {
+  // more than 50 causes FF to be very slow
+  var fractalCopies = 50; 
+  for(var i = 0; i < fractalCopies; i++) {
+      var newDB = layer.cloneNode(true);
+      newDB.setAttribute("transform", "translate(460,250) scale(0.5 0.5) rotate(30)");
+      newDB.setAttribute("id", "newdb" + i);
+      //newDB.setAttribute("transform", "rotate(10)");
+      //newDB.setAttribute("transform", "translate(30,30)");
+      layer.insertBefore(newDB, dick);
+      dick = newDB.childNodes[3];
+      layer = newDB;
+  }
 }
-//}, 10);
 
 
 var frame = -1;
@@ -179,6 +181,9 @@ function developFrames() {
   window.root2 = document.querySelector("#svg2 #viewport");
 }
 // developFrames();
+
+
+cloneLayers();
 
 // usage:
 // instead of setInterval(render, 16) ....
